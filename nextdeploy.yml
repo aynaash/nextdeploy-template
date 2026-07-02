@@ -1,21 +1,31 @@
 # nextdeploy.yml — the whole deploy, one file, committed to your repo.
-# Edit `domain` and `host`, then run: nextdeploy up
+#
+# First run:  nextdeploy prepare   (provisions the VPS — once per server)
+#             nextdeploy secrets load .env.production
+#             nextdeploy ship      (build + deploy; writes dns.md for HTTPS)
+# After that: nextdeploy ship
+version: "1.0"
+target_type: vps
 
 app:
   name: nextdeploy-template
-  domain: example.com # <- your domain
   port: 3000
+  environment: production
+  domain: example.com # <- your domain — Caddy auto-provisions TLS
 
 servers:
-  - host: 203.0.113.10 # <- your VPS IP
-    ssl: caddy # automatic HTTPS, zero config
+  - name: prod
+    host: 203.0.113.10 # <- your VPS IP or hostname
+    port: 22
+    username: ubuntu # an SSH user that can sudo
+    key_path: ~/.ssh/id_rsa
 
-build:
-  command: next build
+ssl:
+  enabled: true
+  provider: letsencrypt
+  email: admin@example.com # <- cert notifications
+  auto_renew: true
 
-env:
-  # Secrets are read from the server's environment (or a .env you place
-  # there) — never commit real values to git.
-  - DATABASE_URL
-  - BETTER_AUTH_SECRET
-  - BETTER_AUTH_URL
+logging:
+  enabled: true
+  stream_logs: true
