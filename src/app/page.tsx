@@ -5,238 +5,323 @@ import { FlagStripe, Shield } from "@/components/flag-stripe";
 import { NairobiSkyline } from "@/components/nairobi-skyline";
 import { auth } from "@/lib/auth";
 
+const specs = [
+  { k: "Framework", v: "Next.js 15 · RSC" },
+  { k: "Auth", v: "better-auth" },
+  { k: "Database", v: "Neon + Drizzle" },
+  { k: "Runtime", v: "Node · your VPS" },
+  { k: "TLS", v: "Caddy · auto-HTTPS" },
+];
+
 const stats = [
   { value: "1", label: "command to ship" },
   { value: "0s", label: "downtime deploys" },
-  { value: "$5", label: "VPS a month is plenty" },
-  { value: "100%", label: "yours — no lock-in" },
+  { value: "$5", label: "vps a month" },
+  { value: "100%", label: "yours" },
 ];
 
 const features = [
   {
-    title: "Auth included",
-    body: "better-auth with email + password and sessions in Postgres. Wired, not stubbed.",
+    n: "01",
+    title: "Auth, wired not stubbed",
+    body: "better-auth with email + password and sessions persisted in Postgres. Sign-up, sessions, sign-out — working on first run.",
     accent: "bg-black",
   },
   {
+    n: "02",
     title: "Serverless Postgres",
-    body: "Neon + Drizzle ORM. Typed schema, one-command migrations with db:push.",
+    body: "Neon + Drizzle ORM. A typed schema and one-command migrations with db:push. Real full-stack CRUD out of the box.",
     accent: "bg-[#BB0000]",
   },
   {
+    n: "03",
     title: "Deploy to your VPS",
-    body: "One committed nextdeploy.yml. Zero-downtime ships, instant rollbacks, HTTPS via Caddy.",
+    body: "One committed nextdeploy.yml. Zero-downtime ships that health-check before the traffic flips, instant rollbacks, HTTPS via Caddy.",
     accent: "bg-[#006600]",
   },
 ];
 
-const ecosystem = [
+const ticker = [
   "Silicon Savannah",
   "Konza Technopolis",
   "iHub",
   "Nairobi CBD",
   "M-Pesa scale",
+  "Own your server",
+  "No lock-in",
+  "No surprise bills",
 ];
 
 export default async function Home() {
   const session = await auth.api.getSession({ headers: await headers() });
 
   return (
-    <div className="min-h-screen bg-[#faf8f3]">
+    <div className="min-h-screen bg-[#faf8f3] text-stone-900">
       <FlagStripe />
 
       {/* Nav */}
-      <header className="mx-auto flex max-w-5xl items-center justify-between px-6 py-6">
-        <Link href="/" className="flex items-center gap-2.5 font-semibold">
-          <Shield className="h-7 w-6" />
-          <span>
-            NextDeploy{" "}
-            <span className="align-middle text-xs font-normal text-stone-400">
-              🇰🇪
+      <header className="border-b-2 border-stone-900">
+        <div className="mx-auto flex max-w-6xl items-center justify-between px-5 py-4 lg:px-8">
+          <Link href="/" className="flex items-center gap-2.5">
+            <Shield className="h-8 w-7" />
+            <span className="font-mono text-sm font-bold uppercase tracking-[0.2em]">
+              NextDeploy
             </span>
-          </span>
-        </Link>
-        <nav className="flex items-center gap-2 text-sm">
-          {session ? (
-            <Link
-              href="/dashboard"
-              className="rounded-lg bg-black px-4 py-2 font-medium text-white transition hover:bg-stone-800"
-            >
-              Dashboard
-            </Link>
-          ) : (
-            <>
+            <span className="text-xs">🇰🇪</span>
+          </Link>
+          <nav className="flex items-center gap-1 font-mono text-xs font-medium uppercase tracking-[0.15em]">
+            {session ? (
               <Link
-                href="/sign-in"
-                className="rounded-lg px-4 py-2 font-medium text-stone-600 transition hover:bg-stone-200/60 hover:text-stone-900"
+                href="/dashboard"
+                className="border-2 border-stone-900 bg-stone-900 px-4 py-2 text-[#faf8f3] transition hover:bg-transparent hover:text-stone-900"
               >
-                Sign in
+                Dashboard →
               </Link>
-              <Link
-                href="/sign-up"
-                className="rounded-lg bg-[#006600] px-4 py-2 font-medium text-white transition hover:bg-[#005500]"
-              >
-                Get started
-              </Link>
-            </>
-          )}
-        </nav>
+            ) : (
+              <>
+                <Link
+                  href="/sign-in"
+                  className="hidden px-4 py-2 text-stone-500 transition hover:text-stone-900 sm:block"
+                >
+                  Sign in
+                </Link>
+                <Link
+                  href="/sign-up"
+                  className="border-2 border-stone-900 bg-stone-900 px-4 py-2 text-[#faf8f3] transition hover:bg-transparent hover:text-stone-900"
+                >
+                  Get started
+                </Link>
+              </>
+            )}
+          </nav>
+        </div>
       </header>
 
       {/* Hero */}
-      <section className="mx-auto flex max-w-3xl flex-col items-center gap-6 px-6 pb-8 pt-14 text-center sm:pt-20">
-        <span className="inline-flex items-center gap-2 rounded-full border border-stone-200 bg-white px-3.5 py-1.5 text-xs font-medium text-stone-600 shadow-sm">
-          <span className="h-1.5 w-1.5 rounded-full bg-[#006600]" />
-          Built in the Silicon Savannah · Nairobi, Kenya
-        </span>
+      <section className="border-b-2 border-stone-900">
+        <div className="mx-auto grid max-w-6xl lg:grid-cols-12">
+          {/* Left — the pitch */}
+          <div className="border-stone-900 px-5 py-12 lg:col-span-7 lg:border-r-2 lg:py-20 lg:pl-8 lg:pr-12">
+            <div className="flex flex-wrap items-center gap-3 font-mono text-[0.7rem] uppercase tracking-[0.2em] text-stone-500">
+              <span className="bg-stone-900 px-2 py-1 text-[#faf8f3]">
+                01 / Deploy
+              </span>
+              <span>01°17′S · 36°49′E — Nairobi</span>
+            </div>
 
-        <h1 className="text-4xl font-semibold tracking-tight text-stone-900 sm:text-6xl">
-          Deploy full-stack apps{" "}
-          <span className="bg-gradient-to-r from-[#BB0000] via-black to-[#006600] bg-clip-text text-transparent">
-            from the Silicon Savannah.
-          </span>
-        </h1>
+            <h1 className="mt-8 text-[2.6rem] font-bold leading-[0.95] tracking-tight sm:text-6xl lg:text-[4.5rem]">
+              Ship full-stack
+              <br />
+              apps to a box
+              <br />
+              you{" "}
+              <span className="box-decoration-clone bg-[#006600] px-2 text-[#faf8f3]">
+                actually own.
+              </span>
+            </h1>
 
-        <p className="max-w-xl text-lg text-stone-600">
-          A Next.js starter with auth and Postgres already wired — shipped to a
-          server <strong className="text-stone-900">you own</strong> with a
-          single command. Mobile-first, built for Nairobi and beyond.
-        </p>
+            <p className="mt-7 max-w-md text-lg leading-relaxed text-stone-600">
+              Next.js, auth and Postgres — wired, not stubbed — shipped to your
+              own VPS with a single command. No platform in the middle, no
+              lock-in, no surprise bill.
+            </p>
 
-        <div className="flex flex-col gap-3 sm:flex-row">
-          <Link
-            href={session ? "/dashboard" : "/sign-up"}
-            className="group inline-flex items-center justify-center gap-2 rounded-lg bg-black px-6 py-3 text-sm font-medium text-white shadow-sm transition hover:bg-stone-800"
-          >
-            {session ? "Open dashboard" : "Get started free"}
-            <span className="transition group-hover:translate-x-0.5">→</span>
-          </Link>
-          <a
-            href="https://github.com/aynaash/nextdeploy-template"
-            className="inline-flex items-center justify-center rounded-lg border border-stone-300 bg-white px-6 py-3 text-sm font-medium text-stone-700 transition hover:bg-stone-50"
-          >
-            View on GitHub
-          </a>
+            <div className="mt-9 flex flex-wrap">
+              <Link
+                href={session ? "/dashboard" : "/sign-up"}
+                className="border-2 border-stone-900 bg-stone-900 px-6 py-3.5 font-mono text-xs font-medium uppercase tracking-[0.15em] text-[#faf8f3] transition hover:bg-transparent hover:text-stone-900"
+              >
+                {session ? "Open dashboard →" : "Get started free →"}
+              </Link>
+              <a
+                href="https://github.com/aynaash/nextdeploy-template"
+                className="-ml-0.5 border-2 border-stone-900 px-6 py-3.5 font-mono text-xs font-medium uppercase tracking-[0.15em] transition hover:bg-stone-900 hover:text-[#faf8f3]"
+              >
+                Source ↗
+              </a>
+            </div>
+          </div>
+
+          {/* Right — the manifest */}
+          <div className="flex flex-col justify-between bg-stone-900 px-5 py-12 text-[#faf8f3] lg:col-span-5 lg:p-8">
+            <div>
+              <p className="font-mono text-[0.7rem] uppercase tracking-[0.2em] text-stone-500">
+                {"// the stack"}
+              </p>
+              <dl className="mt-6 divide-y divide-white/10 font-mono text-sm">
+                {specs.map((s) => (
+                  <div
+                    key={s.k}
+                    className="flex items-center justify-between py-3.5"
+                  >
+                    <dt className="uppercase tracking-widest text-stone-500">
+                      {s.k}
+                    </dt>
+                    <dd className="text-right">{s.v}</dd>
+                  </div>
+                ))}
+              </dl>
+            </div>
+            <NairobiSkyline className="mt-10 h-16 w-full text-white/15" />
+          </div>
         </div>
       </section>
 
-      {/* Skyline band */}
-      <div className="relative mx-auto max-w-6xl px-6">
-        <NairobiSkyline className="h-24 w-full text-stone-900/10 sm:h-32" />
+      {/* Ticker */}
+      <div className="overflow-hidden border-b-2 border-stone-900 bg-[#BB0000]">
+        <div className="flex w-max animate-marquee py-2.5">
+          {[0, 1].map((dup) => (
+            <ul
+              key={dup}
+              aria-hidden={dup === 1}
+              className="flex shrink-0 items-center font-mono text-xs font-medium uppercase tracking-[0.2em] text-white"
+            >
+              {ticker.map((item) => (
+                <li key={item} className="flex items-center">
+                  <span className="px-6">{item}</span>
+                  <span className="text-white/50">◆</span>
+                </li>
+              ))}
+            </ul>
+          ))}
+        </div>
       </div>
 
-      {/* One-command terminal */}
-      <section className="mx-auto max-w-3xl px-6 pb-16">
-        <div className="overflow-hidden rounded-xl border border-stone-800 bg-stone-950 shadow-xl">
-          <div className="flex items-center gap-2 border-b border-stone-800 px-4 py-2.5">
-            <span className="h-3 w-3 rounded-full bg-[#BB0000]" />
-            <span className="h-3 w-3 rounded-full bg-[#F5A623]" />
-            <span className="h-3 w-3 rounded-full bg-[#006600]" />
-            <span className="ml-2 text-xs text-stone-500">
-              nairobi — nextdeploy
-            </span>
-          </div>
-          <pre className="overflow-x-auto px-5 py-4 text-sm leading-relaxed text-stone-300">
-            <code>
-              <span className="text-stone-500">
-                # provision your VPS — once
-              </span>
-              {"\n"}
-              <span className="text-[#F5A623]">$</span> nextdeploy prepare{"\n"}
-              <span className="text-stone-500"># load your secrets</span>
-              {"\n"}
-              <span className="text-[#F5A623]">$</span> nextdeploy secrets load
-              .env.production{"\n"}
-              <span className="text-stone-500">
-                # build + ship, zero downtime
-              </span>
-              {"\n"}
-              <span className="text-[#F5A623]">$</span> nextdeploy ship{"  "}
-              <span className="text-[#006600]">✓ live at your domain</span>
-            </code>
-          </pre>
-        </div>
-      </section>
-
-      {/* Stats bar */}
-      <section className="mx-auto max-w-5xl px-6 pb-16">
-        <dl className="grid grid-cols-2 gap-px overflow-hidden rounded-2xl border border-stone-200 bg-stone-200 sm:grid-cols-4">
+      {/* Stats */}
+      <section className="border-b-2 border-stone-900">
+        <div className="mx-auto grid max-w-6xl grid-cols-2 gap-px bg-stone-900 lg:grid-cols-4">
           {stats.map((s) => (
-            <div key={s.label} className="bg-white px-6 py-8 text-center">
-              <dt className="text-3xl font-semibold text-stone-900">
+            <div key={s.label} className="bg-[#faf8f3] px-5 py-9 lg:px-8">
+              <div className="font-mono text-4xl font-bold tracking-tight lg:text-5xl">
                 {s.value}
-              </dt>
-              <dd className="mt-1 text-sm text-stone-500">{s.label}</dd>
-            </div>
-          ))}
-        </dl>
-      </section>
-
-      {/* Features */}
-      <section className="mx-auto max-w-5xl px-6 pb-16">
-        <div className="grid gap-4 sm:grid-cols-3">
-          {features.map((f) => (
-            <div
-              key={f.title}
-              className="overflow-hidden rounded-2xl border border-stone-200 bg-white shadow-sm"
-            >
-              <div className={`h-1 w-full ${f.accent}`} />
-              <div className="p-6">
-                <h3 className="font-semibold text-stone-900">{f.title}</h3>
-                <p className="mt-2 text-sm leading-relaxed text-stone-600">
-                  {f.body}
-                </p>
+              </div>
+              <div className="mt-2 font-mono text-[0.7rem] uppercase tracking-[0.2em] text-stone-500">
+                {s.label}
               </div>
             </div>
           ))}
         </div>
       </section>
 
-      {/* Ecosystem strip */}
-      <section className="mx-auto max-w-5xl px-6 pb-20">
-        <p className="text-center text-xs font-medium uppercase tracking-[0.2em] text-stone-400">
-          Made for Africa&apos;s fastest-growing tech scene
-        </p>
-        <div className="mt-4 flex flex-wrap items-center justify-center gap-x-8 gap-y-3 text-sm font-medium text-stone-500">
-          {ecosystem.map((name) => (
-            <span key={name}>{name}</span>
-          ))}
+      {/* Features */}
+      <section className="border-b-2 border-stone-900">
+        <div className="mx-auto max-w-6xl">
+          <div className="flex items-baseline justify-between px-5 py-6 lg:px-8">
+            <h2 className="font-mono text-[0.7rem] uppercase tracking-[0.2em] text-stone-500">
+              {"// what you get"}
+            </h2>
+            <span className="font-mono text-[0.7rem] uppercase tracking-[0.2em] text-stone-400">
+              03 · included
+            </span>
+          </div>
+          <ul>
+            {features.map((f) => (
+              <li
+                key={f.n}
+                className="grid items-start gap-4 border-t-2 border-stone-900 px-5 py-8 lg:grid-cols-12 lg:items-center lg:gap-6 lg:px-8"
+              >
+                <div className="flex items-center gap-4 lg:col-span-2">
+                  <span className={`h-3 w-3 ${f.accent}`} />
+                  <span className="font-mono text-sm text-stone-400">{f.n}</span>
+                </div>
+                <h3 className="text-2xl font-bold tracking-tight lg:col-span-4 lg:text-3xl">
+                  {f.title}
+                </h3>
+                <p className="max-w-xl leading-relaxed text-stone-600 lg:col-span-6">
+                  {f.body}
+                </p>
+              </li>
+            ))}
+          </ul>
         </div>
       </section>
 
-      {/* Harambee banner */}
-      <section className="mx-auto max-w-5xl px-6 pb-24">
-        <div className="relative overflow-hidden rounded-2xl bg-black px-8 py-12 text-center sm:py-16">
-          <FlagStripe className="absolute inset-x-0 top-0" />
-          <p className="text-2xl font-semibold text-white sm:text-3xl">
-            Harambee — pull together 🤝
+      {/* Terminal */}
+      <section className="border-b-2 border-stone-900 bg-stone-950 text-stone-100">
+        <div className="mx-auto max-w-6xl px-5 py-16 lg:px-8">
+          <p className="font-mono text-[0.7rem] uppercase tracking-[0.2em] text-stone-500">
+            {"// the whole deploy"}
           </p>
-          <p className="mx-auto mt-3 max-w-lg text-stone-300">
-            Kenya&apos;s spirit of pulling together, in your stack: own your
-            server, own your data, own your deploy. No platform lock-in, no
-            surprise bills.
-          </p>
-          <Link
-            href={session ? "/dashboard" : "/sign-up"}
-            className="mt-6 inline-flex items-center justify-center rounded-lg bg-white px-6 py-3 text-sm font-medium text-black transition hover:bg-stone-200"
-          >
-            {session ? "Open dashboard" : "Create a free account"}
-          </Link>
+          <h2 className="mt-4 max-w-2xl text-3xl font-bold leading-tight tracking-tight lg:text-5xl">
+            Three commands. Then it&rsquo;s just{" "}
+            <span className="text-[#4ade80]">nextdeploy ship</span>.
+          </h2>
+
+          <div className="mt-10 max-w-3xl border-2 border-stone-700 bg-black">
+            <div className="flex items-center gap-2 border-b-2 border-stone-800 px-4 py-2.5">
+              <span className="h-3 w-3 rounded-full bg-[#BB0000]" />
+              <span className="h-3 w-3 rounded-full bg-[#F5A623]" />
+              <span className="h-3 w-3 rounded-full bg-[#006600]" />
+              <span className="ml-2 font-mono text-xs text-stone-500">
+                ubuntu@nairobi — nextdeploy
+              </span>
+            </div>
+            <pre className="overflow-x-auto px-5 py-5 font-mono text-sm leading-relaxed text-stone-300">
+              <code>
+                <span className="text-stone-500">
+                  # provision your VPS — once
+                </span>
+                {"\n"}
+                <span className="text-[#F5A623]">$</span> nextdeploy prepare
+                {"\n\n"}
+                <span className="text-stone-500"># load your secrets</span>
+                {"\n"}
+                <span className="text-[#F5A623]">$</span> nextdeploy secrets load
+                .env.production{"\n\n"}
+                <span className="text-stone-500">
+                  # build + ship, zero downtime
+                </span>
+                {"\n"}
+                <span className="text-[#F5A623]">$</span> nextdeploy ship{"   "}
+                <span className="text-[#4ade80]">✓ live at your domain</span>
+              </code>
+            </pre>
+          </div>
+        </div>
+      </section>
+
+      {/* Harambee CTA */}
+      <section className="border-b-2 border-stone-900 bg-[#006600] text-white">
+        <div className="mx-auto grid max-w-6xl gap-8 px-5 py-16 lg:grid-cols-12 lg:items-end lg:px-8">
+          <div className="lg:col-span-8">
+            <p className="font-mono text-[0.7rem] uppercase tracking-[0.2em] text-white/60">
+              {"// harambee — pull together"}
+            </p>
+            <h2 className="mt-4 text-4xl font-bold leading-[0.95] tracking-tight lg:text-6xl">
+              Own your server.
+              <br />
+              Own your data.
+              <br />
+              Own your deploy.
+            </h2>
+          </div>
+          <div className="lg:col-span-4">
+            <p className="text-white/80">
+              Kenya&rsquo;s spirit of pulling together, in your stack. Built in
+              the Silicon Savannah — for Nairobi and beyond.
+            </p>
+            <Link
+              href={session ? "/dashboard" : "/sign-up"}
+              className="mt-6 inline-block border-2 border-white bg-white px-6 py-3.5 font-mono text-xs font-medium uppercase tracking-[0.15em] text-[#006600] transition hover:bg-transparent hover:text-white"
+            >
+              {session ? "Open dashboard →" : "Create an account →"}
+            </Link>
+          </div>
         </div>
       </section>
 
       {/* Footer */}
-      <footer className="border-t border-stone-200">
-        <div className="mx-auto flex max-w-5xl flex-col items-center justify-between gap-3 px-6 py-8 sm:flex-row">
-          <p className="flex items-center gap-2 text-sm text-stone-500">
+      <footer className="mx-auto max-w-6xl px-5 py-10 lg:px-8">
+        <div className="flex flex-col items-start justify-between gap-4 font-mono text-xs uppercase tracking-[0.15em] text-stone-500 sm:flex-row sm:items-center">
+          <span className="flex items-center gap-2.5 text-stone-700">
             <Shield className="h-5 w-4" />
-            Built with the NextDeploy template · from Nairobi 🇰🇪
-          </p>
+            NextDeploy · Nairobi 🇰🇪
+          </span>
           <a
             href="https://hersitech.com/talks/nextdeploy"
-            className="text-sm text-stone-600 underline-offset-2 hover:underline"
+            className="underline-offset-4 transition hover:text-stone-900 hover:underline"
           >
-            about the talk
+            About the talk ↗
           </a>
         </div>
       </footer>
