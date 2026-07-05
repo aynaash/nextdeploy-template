@@ -51,3 +51,56 @@ export const verification = pgTable("verification", {
   createdAt: timestamp("created_at").notNull().defaultNow(),
   updatedAt: timestamp("updated_at").notNull().defaultNow(),
 });
+
+// ── Application data ─────────────────────────────────────────────────────────
+// A real, user-owned table so the template demonstrates full-stack CRUD (Server
+// Actions writing to Postgres), not just auth. Model your own domain here.
+
+export const projectStatus = ["building", "live", "stopped"] as const;
+export type ProjectStatus = (typeof projectStatus)[number];
+
+export const project = pgTable("project", {
+  id: text("id")
+    .primaryKey()
+    .$defaultFn(() => crypto.randomUUID()),
+  name: text("name").notNull(),
+  domain: text("domain"),
+  status: text("status", { enum: projectStatus }).notNull().default("building"),
+  userId: text("user_id")
+    .notNull()
+    .references(() => user.id, { onDelete: "cascade" }),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+  updatedAt: timestamp("updated_at").notNull().defaultNow(),
+});
+
+export type Project = typeof project.$inferSelect;
+
+export const deploymentStatus = [
+  "building",
+  "live",
+  "failed",
+  "rolled-back",
+] as const;
+export type DeploymentStatus = (typeof deploymentStatus)[number];
+
+// One row per ship. The dashboard's activity feed and "current release" card are
+// read straight from this table — real data, not mock JSON.
+export const deployment = pgTable("deployment", {
+  id: text("id")
+    .primaryKey()
+    .$defaultFn(() => crypto.randomUUID()),
+  projectId: text("project_id")
+    .notNull()
+    .references(() => project.id, { onDelete: "cascade" }),
+  userId: text("user_id")
+    .notNull()
+    .references(() => user.id, { onDelete: "cascade" }),
+  commit: text("commit").notNull(),
+  message: text("message").notNull(),
+  status: text("status", { enum: deploymentStatus })
+    .notNull()
+    .default("building"),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+});
+
+export type Deployment = typeof deployment.$inferSelect;

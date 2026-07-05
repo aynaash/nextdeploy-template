@@ -13,3 +13,17 @@ out/
 # misc
 *.tsbuildinfo
 .DS_Store
+
+# secrets & keys — never commit these
+*.pem
+*.key
+
+# local deploy artifacts
+.nextdeploy/
+app.tar.gz
+*-report.html
+*-latest.html
+
+# aws cli download (local only)
+aws/
+awscliv2.zip

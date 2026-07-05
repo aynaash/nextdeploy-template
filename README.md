@@ -3,12 +3,24 @@
 A full-stack **Next.js** starter — auth and Postgres included — that deploys to
 a VPS **you own** with one command.
 
-- **Next.js 15** (App Router, Server Components, TypeScript strict)
+- **Next.js 15** (App Router, Server Components, Server Actions, TypeScript strict)
 - **[better-auth](https://better-auth.com)** — email + password, sessions in Postgres
 - **[Neon](https://neon.tech)** — serverless Postgres (free tier is plenty)
 - **[Drizzle ORM](https://orm.drizzle.team)** — typed schema, `db:push` migrations
+- **[zod](https://zod.dev)** — validated env (`src/lib/env.ts`) and Server Action inputs
 - **Tailwind CSS v4**
 - **[`nextdeploy.yml`](./nextdeploy.yml)** — the whole deploy, one committed file
+
+### What's wired
+
+- **Auth** — sign up / in / out, protected `/dashboard/*`, `?redirect=` handling
+- **A data-driven dashboard** — Overview, Projects (full CRUD via Server Actions),
+  and Settings, all reading/writing real rows in Postgres (no mock JSON)
+- **`GET /api/health`** — DB-checked readiness probe for zero-downtime deploys
+- **Edge middleware** — optimistic auth redirect + baseline security headers
+- **SEO & PWA assets** — generated `robots`, `sitemap`, `manifest`, favicon, and a
+  dynamic OpenGraph image (all code, no binaries to commit)
+- **`Dockerfile`** — minimal multi-stage image from Next's standalone output
 
 From the talk **“NextDeploy — deploying full-stack apps, made easier”**
 → slides at [hersitech.com/talks/nextdeploy](https://hersitech.com/talks/nextdeploy)
@@ -62,22 +74,50 @@ nextdeploy rollback --steps 1  # revert to the previous release
 Secrets live on the VPS (mode 0600) and hot-reload the app when set — never
 commit them.
 
+## Run with Docker
+
+The included `Dockerfile` builds a minimal image from Next's standalone output:
+
+```bash
+docker build -t nextdeploy-app .
+docker run -p 3000:3000 \
+  -e DATABASE_URL="postgresql://…" \
+  -e BETTER_AUTH_SECRET="…" \
+  -e BETTER_AUTH_URL="https://your-domain.com" \
+  nextdeploy-app
+```
+
+It ships with a `HEALTHCHECK` that hits `/api/health` (which pings Postgres).
+
 ## Project layout
 
 ```
 src/
+  middleware.ts                    # edge: auth redirect + security headers
   app/
-    api/auth/[...all]/route.ts   # better-auth handler (all auth endpoints)
-    sign-in/page.tsx             # email+password sign in / sign up
-    page.tsx                     # reads the session server-side
-  components/sign-out-button.tsx
+    layout.tsx                     # root metadata (OpenGraph, sitemap base)
+    loading.tsx / error.tsx / not-found.tsx
+    robots.ts / sitemap.ts / manifest.ts / icon.tsx / opengraph-image.tsx
+    api/
+      auth/[...all]/route.ts       # better-auth handler (all auth endpoints)
+      health/route.ts              # DB-checked readiness probe for deploys
+    sign-in/ sign-up/              # email + password auth pages
+    dashboard/
+      layout.tsx                   # auth guard + top bar + tab nav
+      page.tsx                     # Overview — live stats from Postgres
+      projects/                    # full CRUD (page + Server Actions + form)
+      settings/                    # profile update via better-auth
+  components/                      # flag-stripe, nav, auth form, skyline, …
   db/
-    schema.ts                    # better-auth tables (user, session, account, verification)
-    index.ts                     # Drizzle + Neon client
+    schema.ts                      # auth tables + app tables (project, deployment)
+    index.ts                       # Drizzle + Neon client
   lib/
-    auth.ts                      # better-auth server config
-    auth-client.ts               # better-auth React client
-nextdeploy.yml                   # the deploy, in git
+    env.ts                         # zod-validated environment
+    auth.ts / auth-client.ts       # better-auth server + React client
+    session.ts                     # getSession() / requireSession() helpers
+    site.ts                        # public URL + site metadata
+nextdeploy.yml                     # the deploy, in git
+Dockerfile                         # standalone container image
 ```
 
 ## License

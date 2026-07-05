@@ -1,0 +1,19 @@
+node_modules
+.next
+.git
+.env
+.env.*
+!.env.example
+*.tsbuildinfo
+.DS_Store
+
+# local build/deploy artifacts — never ship these into the image
+.nextdeploy
+app.tar.gz
+aws
+awscliv2.zip
+*.pem
+*-report.html
+*-latest.html
+dns.md
+README.md

@@ -4,10 +4,10 @@ import { AuthLayout } from "@/components/auth-layout";
 // Reads ?redirect= via useSearchParams in AuthForm.
 export const dynamic = "force-dynamic";
 
-export default function SignInPage() {
+export default function SignUpPage() {
   return (
     <AuthLayout>
-      <AuthForm mode="sign-in" />
+      <AuthForm mode="sign-up" />
     </AuthLayout>
   );
 }

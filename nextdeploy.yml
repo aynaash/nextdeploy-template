@@ -1,31 +1,80 @@
-# nextdeploy.yml — the whole deploy, one file, committed to your repo.
-#
-# First run:  nextdeploy prepare   (provisions the VPS — once per server)
-#             nextdeploy secrets load .env.production
-#             nextdeploy ship      (build + deploy; writes dns.md for HTTPS)
-# After that: nextdeploy ship
+
+# ==============================
+# NEXTDEPLOY CONFIGURATION FILE
+# ==============================
 version: "1.0"
+
+# -----
+# TARGET TYPE — VPS
+# -----
 target_type: vps
 
+# -----
+# APP METADATA
+# -----
 app:
-  name: nextdeploy-template
-  port: 3000
+  name: ressencesystems.com
   environment: production
-  domain: example.com # <- your domain — Caddy auto-provisions TLS
+  domain:
+    name: ressencesystems.com
+    provider: namecheap
+    dns: manual
+    zone: ressencesystems.com
+  port: 3000
 
+# -----
+# DEPLOYMENT SERVERS
+# -----
 servers:
-  - name: prod
-    host: 203.0.113.10 # <- your VPS IP or hostname
-    port: 22
-    username: ubuntu # an SSH user that can sudo
-    key_path: ~/.ssh/id_rsa
+  - name: "production-01"
+    host: 54.89.232.68
+    username: ubuntu
+    key_path: ~/demo.pem
+    # password: ""  # Optional
 
-ssl:
-  enabled: true
-  provider: letsencrypt
-  email: admin@example.com # <- cert notifications
-  auto_renew: true
-
+# -----
+# LOGGING CONFIGURATION
+# -----
 logging:
   enabled: true
+  provider: nextdeploy
   stream_logs: true
+  log_path: /var/log/containers/resessecsystems.log
+
+# -----
+# MONITORING & ALERTING
+# -----
+monitoring:
+  enabled: true
+  cpu_threshold: 80
+  memory_threshold: 75
+  disk_threshold: 90
+  alert:
+    email: admin@resessecsystems.com
+    # slack_webhook: https://hooks.slack.com/services/...
+    notify_on:
+      - crash
+      - healthcheck_failed
+      - high_cpu
+      - high_memory
+
+# -----
+# BACKUP STRATEGY
+# -----
+backup:
+  enabled: true
+  frequency: daily
+  retention_days: 7
+  storage:
+    provider: s3
+    bucket: resessecsystems-backups
+    region: us-east-1
+
+# -----
+# WEBHOOKS AFTER DEPLOYMENT
+# -----
+webhook:
+  on_success:
+    - echo "Deployment successful for resessecsystems.com"
+  on_failure:
+    - echo "Deployment failed for resessecsystems.com"
